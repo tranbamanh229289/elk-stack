@@ -1,0 +1,70 @@
+version: '3.0'
+networks:
+  elknet:
+    driver: bridge
+volumes:
+  elasticdata: {}
+
+services:
+  elasticsearch:
+    image: elasticsearch:8.9.0
+    container_name: elasticsearch
+    restart: always
+    volumes:
+      - type: volume
+        source: elasticdata
+        target: /usr/share/elasticsearch/data
+#      - type: bind
+#        source: ./elasticsearch/config/elasticsearch.yml
+#        target: /usr/share/elasticsearch/config/elasticsearch.yml
+    networks:
+      - elknet
+    ports:
+      - 9200:9200
+      - 9300:9300
+    environment:
+      node.name: elasticsearch9
+      ES_JAVA_OPTS: -Xms512m -Xmx512m
+      ELASTIC_PASSWORD: 2292892000
+      discovery.type: single-node
+
+  kibana:
+    image: kibana:8.9.0
+    container_name: kibana
+    restart: always
+#    volumes:
+#      - type: bind
+#        source: ./kibana/config/kibana.yml
+#        target: /usr/share/kibana/config/kibana.yml
+    networks:
+      - elknet
+    ports:
+      - 5601:5601
+    environment:
+      KIBANA_SYSTEM_PASSWORD: 2292892000
+    depends_on:
+      - elasticsearch
+
+  logstash:
+    image: logstash:8.9.0
+    container_name: logstash
+    restart: always
+#    volumes:
+#      - type: bind
+#        source: ./logstash/config/logstash.yml
+#        target: /usr/share/logstash/config/logstash.yml
+#      - type: bind
+#        source: ./logstash/pipeline
+#        target: /usr/share/logstash/pipeline
+    networks:
+      - elknet
+    ports:
+      - 5044:5044
+      - 50000:50000/tcp
+      - 50000:50000/udp
+      - 9600:9600
+    environment:
+       LS_JAVA_OPTS: -Xms256m -Xmx256m
+       LOGSTASH_INTERNAL_PASSWORD: 2292892000
+    depends_on:
+      - elasticsearch
