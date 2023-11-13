@@ -1,0 +1,17 @@
+#cluster
+cluster.name: es-cluster
+node.name: es-node
+network.host: 0.0.0.0
+
+##config cluster
+#cluster.routing.allocation.enable: all
+#cluster.routing.allocation.node_current_recoveries: 2
+#
+##config index
+#index.number_of_shards: 3
+#index.number_of_replicates: 1
+
+#config xpack
+xpack.license.self_generated.type: trial
+#xpack.security.transport.ssl.enabled: true
+xpack.security.enabled: true
