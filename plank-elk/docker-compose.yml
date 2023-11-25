@@ -1,60 +1,60 @@
-version: '3.0'
+version: "3.0"
 networks:
-  elknet:
-    driver: bridge
+    elknet:
+        driver: bridge
 volumes:
-  elasticdata: {}
+    elasticdata: {}
 
 services:
-  elasticsearch:
-    image: elasticsearch:${ELASTIC_VERSION}
-    container_name: elasticsearch
-    restart: unless-stopped
-    volumes:
-      - elasticdata:/usr/share/elasticsearch/data:Z
-      - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro,Z
-    networks:
-      - elknet
-    ports:
-      - 9200:9200               #es http
-      - 9300:9300               #es tcp
-    environment:
-      bootstrap.memory_lock: true
-      ES_JAVA_OPTS: -Xms512m -Xmx512m
-      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
-      discovery.type: single-node
+    elasticsearch:
+        image: elasticsearch:${ELASTIC_VERSION}
+        container_name: elasticsearch
+        restart: unless-stopped
+        volumes:
+            - elasticdata:/usr/share/elasticsearch/data:Z
+            - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro,Z
+        networks:
+            - elknet
+        ports:
+            - 9200:9200 #es http
+            - 9300:9300 #es tcp
+        environment:
+            bootstrap.memory_lock: true
+            ES_JAVA_OPTS: -Xms512m -Xmx512m
+            ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
+            discovery.type: single-node
 
-  kibana:
-    image: kibana:${ELASTIC_VERSION}
-    container_name: kibana
-    restart: unless-stopped
-    volumes:
-      - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro,Z
-    networks:
-      - elknet
-    ports:
-      - 5601:5601                #kibana
-    environment:
-      KIBANA_SYSTEM_PASSWORD: ${KIBANA_SYSTEM_PASSWORD}
-    depends_on:
-      - elasticsearch
+    kibana:
+        image: kibana:${ELASTIC_VERSION}
+        container_name: kibana
+        restart: unless-stopped
+        volumes:
+            - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro,Z
+        networks:
+            - elknet
+        ports:
+            - 5601:5601 #kibana
+        environment:
+            KIBANA_SYSTEM_PASSWORD: ${KIBANA_SYSTEM_PASSWORD}
+        depends_on:
+            - elasticsearch
 
-  logstash:
-    image: logstash:${ELASTIC_VERSION}
-    container_name: logstash
-    restart: unless-stopped
-    volumes:
-      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro,Z
-      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro,Z
-    networks:
-      - elknet
-    ports:
-      - 5044:5044                 #logtash beats input
-      - 50000:50000/tcp           #logtash tcp input
-      - 50000:50000/udp           #logtash udp input
-      - 9600:9600                 #logtash monitoring
-    environment:
-       LS_JAVA_OPTS: -Xms256m -Xmx256m
-       LOGSTASH_INTERNAL_PASSWORD: ${LOGSTASH_INTERNAL_PASSWORD}
-    depends_on:
-      - elasticsearch
+    logstash:
+        image: logstash:${ELASTIC_VERSION}
+        container_name: logstash
+        restart: unless-stopped
+        volumes:
+            - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro,Z
+            - ./logstash/pipeline:/usr/share/logstash/pipeline:ro,Z
+        networks:
+            - elknet
+        ports:
+            - 5044:5044 #logtash beats input
+            - 50000:50000/tcp #logtash tcp input
+            - 50000:50000/udp #logtash udp input
+            - 9600:9600 #logtash monitoring
+        environment:
+            LS_JAVA_OPTS: -Xms256m -Xmx256m
+            LOGSTASH_SYSTEM_PASSWORD: ${LOGSTASH_SYSTEM_PASSWORD}
+        depends_on:
+            - elasticsearch
