@@ -1,6 +1,6 @@
 # planck
 
-sudo docker exec -it <id elasticsearch> bash
+docker exec -it <id elasticsearch> bash
 
-sudo docker bin/elasticsearch-setup-passwords interative
+bin/elasticsearch-setup-passwords interactive
 
