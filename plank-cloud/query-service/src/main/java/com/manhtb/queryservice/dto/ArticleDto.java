@@ -10,4 +10,9 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ArticleDto {
+    private String id;
+    private String title;
+    private String content;
+    private String newSubHeader;
+    private String newPostDate;
 }

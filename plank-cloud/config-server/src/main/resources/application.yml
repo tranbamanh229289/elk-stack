@@ -8,10 +8,10 @@ spring:
     config:
       server:
         git:
-          uri: https://github.com/tranbamanh229289/planck.git
-          search-paths: plank-cloud/config-store
+          uri: https://github.com/tranbamanh229289/plank.git
+          search-paths: plank-cloud/config-server
           default-label: master
-
-eureka:
-  client:
-    service-url: http://localhost:8761
+  eureka:
+    client:
+      service-url:
+        default-zone: http:/localhost:8761

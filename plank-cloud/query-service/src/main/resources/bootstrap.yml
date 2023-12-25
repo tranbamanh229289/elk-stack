@@ -4,11 +4,17 @@ server:
 spring:
   application:
     name: query-service
-  cloud:
-    config:
-      name: query-service
-      profile: default
-      uri: http://localhost:8000
+#  cloud:
+#    config:
+#      name: query-service
+#      profile: default
+#      uri: http://localhost:8000
+  data:
+    elasticsearch:
+      cluster-name: elastic-cluster
+      cluster-node: localhost:9200
+      repositories:
+        enable: true
 
 eureka:
   client:
